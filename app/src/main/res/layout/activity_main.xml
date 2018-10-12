@@ -5,13 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".MainActivity">
+
 
     <TextView
         android:id="@+id/convType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Length Conversion"
+        android:text="@string/length_conversion"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
@@ -19,7 +23,7 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="From:" />
+        android:text="@string/from_label" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,14 +43,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Yards" />
+            android:text="@string/yards" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="To:" />
+        android:text="@string/to_label" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,7 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Meters" />
+            android:text="@string/meters" />
     </LinearLayout>
 
     <LinearLayout
@@ -79,21 +83,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Calculate" />
+            android:text="@string/calcButton" />
 
         <Button
             android:id="@+id/clearButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Clear" />
+            android:text="@string/clearButton" />
 
         <Button
             android:id="@+id/modeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Mode" />
+            android:text="@string/modeButton" />
     </LinearLayout>
 
 </LinearLayout>

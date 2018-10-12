@@ -1,6 +1,21 @@
 <resources>
     <string name="app_name">Conversion Calc</string>
     <string name="title_activity_mode_selection_activity">ModeSelectionActivity</string>
+    <string name="settings_name">Settings</string>
+    <string name="length_conversion">Length Conversion</string>
+    <string name="volume_conversion">Volume Conversion</string>
+    <string name="from_label">From:</string>
+    <string name="to_label">To:</string>
+    <string name="yards">Yards</string>
+    <string name="meters">Meters</string>
+    <string name="gallons">Gallons</string>
+    <string name="liters">Liters</string>
+    <string name="calcButton">Calculate</string>
+    <string name="clearButton">Clear</string>
+    <string name="modeButton">Mode</string>
+
+
+
     <string-array name="distances">
         <item>Meters</item>
         <item>Miles</item>

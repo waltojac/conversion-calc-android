@@ -1,18 +1,28 @@
 package waltojac.conversioncalc;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity {
     public static final int UNIT_SELECTION = 1;
     boolean distanceMode = true;
+
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+
 
 
     @Override
@@ -55,10 +65,35 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final TextView fromTextField = (TextView) findViewById(R.id.fromTextField);
-        final TextView toTextField = (TextView) findViewById(R.id.toTextField);
+
+        final EditText fromTextField = findViewById(R.id.fromTextField);
+        final EditText toTextField = findViewById(R.id.toTextField);
         final TextView fromUnitLabel = (TextView) findViewById(R.id.fromUnitLabel);
         final TextView toUnitLabel = (TextView) findViewById(R.id.toUnitLabel);
+        final TextView convLabel = (TextView) findViewById(R.id.convType);
+
+        fromTextField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else {
+                    toTextField.setText("");
+                }
+            }
+        });
+
+        toTextField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                } else{
+                    fromTextField.setText("");
+                }
+            }
+        });
+
 
         Button clearButton = (Button) findViewById(R.id.clearButton);
         clearButton.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 fromTextField.setText("");
                 toTextField.setText("");
+                hideKeyboard(view);
             }
         });
 
@@ -76,12 +112,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 distanceMode = !distanceMode;
                 if(distanceMode) {
-                    fromUnitLabel.setText("Yards");
-                    toUnitLabel.setText("Miles");
+                    fromUnitLabel.setText(R.string.yards);
+                    toUnitLabel.setText(R.string.meters);
+                    convLabel.setText(R.string.length_conversion);
                 } else {
-                    fromUnitLabel.setText("Gallons");
-                    toUnitLabel.setText("Liters");
+                    fromUnitLabel.setText(R.string.gallons);
+                    toUnitLabel.setText(R.string.liters);
+                    convLabel.setText(R.string.volume_conversion);
                 }
+                hideKeyboard(view);
             }
         });
 
@@ -114,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
                         fromTextField.setText(Double.toString(UnitsConverter.convert(Double.parseDouble(toTextField.getText().toString()), toUnits, fromUnits))); //to -> from
                     }
                 }
+                hideKeyboard(view);
             }
         });
     }
