@@ -16,6 +16,8 @@ public class ModeSelectionActivity extends AppCompatActivity {
     private String fromSelection = "";
     private String toSelection = "";
     private boolean distanceMode;
+    private int toIndex;
+    private int fromIndex;
 
 
     @Override
@@ -29,7 +31,7 @@ public class ModeSelectionActivity extends AppCompatActivity {
 
         toSelection = intent.getStringExtra("toUnit");
         fromSelection = intent.getStringExtra("fromUnit");
-        distanceMode = parseBoolean(intent.getStringExtra("dMode"));
+        distanceMode = intent.getBooleanExtra("dMode", true);
 
 
 
@@ -53,14 +55,39 @@ public class ModeSelectionActivity extends AppCompatActivity {
         //check mode
         if (distanceMode) {
              adapter = ArrayAdapter.createFromResource(this, R.array.distances, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+             for (int i = 0; i < 3; i++){
+                 if (fromSelection.equals(getResources().getStringArray(R.array.distances)[i])){
+                    fromIndex = i;
+                 }
+             }
+            for (int i = 0; i < 3; i++){
+                if (toSelection.equals(getResources().getStringArray(R.array.distances)[i])){
+                    toIndex = i;
+                }
+            }
+
         } else {
             adapter = ArrayAdapter.createFromResource(this, R.array.volumes, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            for (int i = 0; i < 3; i++){
+                if (fromSelection.equals(getResources().getStringArray(R.array.volumes)[i])){
+                    fromIndex = i;
+                }
+            }
+            for (int i = 0; i < 3; i++){
+                if (toSelection.equals(getResources().getStringArray(R.array.volumes)[i])){
+                    toIndex = i;
+                }
+            }
         }
 
 
         fromSpinner.setAdapter(adapter);
+        fromSpinner.setSelection(fromIndex);
+
         fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -74,6 +101,8 @@ public class ModeSelectionActivity extends AppCompatActivity {
         });
 
         toSpinner.setAdapter(adapter);
+        toSpinner.setSelection(toIndex);
+
         toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
