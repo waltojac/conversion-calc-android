@@ -17,8 +17,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ModeSelectionActicity"
-            android:label="@string/title_activity_mode_selection_acticity"
+            android:name=".ModeSelectionActivity"
+            android:label="@string/title_activity_mode_selection_activity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
