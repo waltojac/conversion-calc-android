@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Conversion Calc</string>
+    <string name="title_activity_mode_selection_acticity">ModeSelectionActicity</string>
+    <string-array name="distances">
+        <item>Meters</item>
+        <item>Miles</item>
+        <item>Yards</item>
+    </string-array>
 </resources>
