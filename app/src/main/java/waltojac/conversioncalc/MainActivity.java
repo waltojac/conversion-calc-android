@@ -12,9 +12,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
+
+import waltojac.conversioncalc.dummy.HistoryContent;
+
 
 public class MainActivity extends AppCompatActivity {
     public static final int UNIT_SELECTION = 1;
+    public static final int HISTORY_RESULT = 1;
+
     boolean distanceMode = true;
 
     public void hideKeyboard(View view) {
@@ -33,7 +39,25 @@ public class MainActivity extends AppCompatActivity {
 
             fromUnitLabel.setText(data.getStringExtra("fromSelect"));
             toUnitLabel.setText(data.getStringExtra("toSelect"));
+        } else if (resultCode == HISTORY_RESULT) {
+            String[] vals = data.getStringArrayExtra("item");
+
+            final TextView fromField = findViewById(R.id.fromTextField);
+            final TextView fromUnits = (TextView) findViewById(R.id.fromUnitLabel);
+            final TextView toField = findViewById(R.id.toTextField);
+            final TextView toUnits = (TextView) findViewById(R.id.toUnitLabel);
+            final TextView mode = findViewById(R.id.convType);
+            final TextView title = (TextView) findViewById(R.id.showTitle);
+
+
+            fromField.setText(vals[0]);
+            toField.setText(vals[1]);
+            mode.setText(vals[2]);
+            fromUnits.setText(vals[3]);
+            toUnits.setText(vals[4]);
+            title.setText(vals[2] + " Converter");
         }
+
 
     }
 
@@ -54,6 +78,11 @@ public class MainActivity extends AppCompatActivity {
                 settingsIntent.putExtra("fromUnit", fromUnitLabel.getText());
                 settingsIntent.putExtra("dMode", distanceMode);
                 startActivityForResult(settingsIntent, UNIT_SELECTION);
+                return true;
+
+            case R.id.action_history:
+                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+                startActivityForResult(intent, HISTORY_RESULT );
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -141,6 +170,11 @@ public class MainActivity extends AppCompatActivity {
                     } else if (!toTextField.getText().toString().matches("")) {
                         fromTextField.setText(Double.toString(UnitsConverter.convert(Double.parseDouble(toTextField.getText().toString()), toUnits, fromUnits))); //to -> from
                     }
+
+                    // remember the calculation.
+                    HistoryContent.HistoryItem item = new HistoryContent.HistoryItem(Double.parseDouble(fromTextField.getText().toString()), Double.parseDouble(toTextField.getText().toString()), "Length",
+                            toUnits.toString(), fromUnits.toString(), DateTime.now());
+                    HistoryContent.addItem(item);
                 } else {    // volume mode
                     UnitsConverter.VolumeUnits fromUnits;
                     UnitsConverter.VolumeUnits toUnits;
@@ -152,7 +186,15 @@ public class MainActivity extends AppCompatActivity {
                     } else if (!toTextField.getText().toString().matches("")) {
                         fromTextField.setText(Double.toString(UnitsConverter.convert(Double.parseDouble(toTextField.getText().toString()), toUnits, fromUnits))); //to -> from
                     }
+
+                    // remember the calculation.
+                    HistoryContent.HistoryItem item = new HistoryContent.HistoryItem(Double.parseDouble(fromTextField.getText().toString()), Double.parseDouble(toTextField.getText().toString()), "Volume",
+                            toUnits.toString(), fromUnits.toString(), DateTime.now());
+                    HistoryContent.addItem(item);
                 }
+
+
+
                 hideKeyboard(view);
             }
         });

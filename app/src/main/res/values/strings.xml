@@ -15,7 +15,6 @@
     <string name="modeButton">Mode</string>
 
 
-
     <string-array name="distances">
         <item>Meters</item>
         <item>Miles</item>
@@ -26,4 +25,5 @@
         <item>Gallons</item>
         <item>Quarts</item>
     </string-array>
+    <string name="title_activity_history">HistoryActivity</string>
 </resources>
