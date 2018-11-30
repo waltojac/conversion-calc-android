@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "916264023176",
+    "firebase_url": "https://conversion-calc-android.firebaseio.com",
+    "project_id": "conversion-calc-android",
+    "storage_bucket": "conversion-calc-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916264023176:android:0eaba9952ca1a9c0",
+        "android_client_info": {
+          "package_name": "waltojac.conversioncalc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916264023176-f638v8o91ulpnngf6vr5jnbilts5taoc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-CdYskbC8gI8KicFNBteQYOQ5Mt6PD04"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
