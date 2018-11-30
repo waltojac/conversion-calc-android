@@ -1,15 +1,26 @@
 package waltojac.conversioncalc;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -26,35 +37,98 @@ import java.util.ArrayList;
 import java.util.List;
 
 import waltojac.conversioncalc.dummy.HistoryContent;
+import waltojac.conversioncalc.webservice.WeatherService;
+
+import static waltojac.conversioncalc.webservice.WeatherService.BROADCAST_WEATHER;
 
 
 public class MainActivity extends AppCompatActivity {
     public static final int UNIT_SELECTION = 1;
     public static final int HISTORY_RESULT = 1;
+    private static final String TAG = "Main Activity";
     DatabaseReference topRef;
     public static List<HistoryContent.HistoryItem> allHistory = new ArrayList<HistoryContent.HistoryItem>();
+    ImageView weatherIcon = null;
+    TextView current = null;
+    TextView temperature = null;
+    private double longitude;
+    private double latitude;
+
+    LocationManager mLocationManager;
+    Location location;
+
+
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+            //your code here
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
+
+    private BroadcastReceiver weatherReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "onReceive: " + intent);
+            Bundle bundle = intent.getExtras();
+            double temp = bundle.getDouble("TEMPERATURE");
+            String summary = bundle.getString("SUMMARY");
+            String icon = bundle.getString("ICON").replaceAll("-", "_");
+            String key = bundle.getString("KEY");
+            Log.d(TAG, "onReceive: " + key + " " + summary);
+            int resID = getResources().getIdentifier(icon, "drawable", getPackageName());
+            //setWeatherViews(View.VISIBLE);
+            if (key.equals("p1")) {
+                current.setText(summary);
+                temperature.setText(Double.toString(temp));
+                weatherIcon.setImageResource(resID);
+            }
+        }
+    };
 
 
     boolean distanceMode = true;
 
     public void hideKeyboard(View view) {
-        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         allHistory.clear();
         topRef = FirebaseDatabase.getInstance().getReference("history");
-        topRef.addChildEventListener (chEvListener);
+        topRef.addChildEventListener(chEvListener);
+
+        IntentFilter weatherFilter = new IntentFilter(BROADCAST_WEATHER);
+        LocalBroadcastManager.getInstance(this).registerReceiver(weatherReceiver, weatherFilter);
+
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         topRef.removeEventListener(chEvListener);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(weatherReceiver);
     }
 
 
@@ -96,10 +170,9 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (resultCode == UNIT_SELECTION){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == UNIT_SELECTION) {
             final TextView fromUnitLabel = (TextView) findViewById(R.id.fromUnitLabel);
             final TextView toUnitLabel = (TextView) findViewById(R.id.toUnitLabel);
 
@@ -149,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_history:
                 Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
-                startActivityForResult(intent, HISTORY_RESULT );
+                startActivityForResult(intent, HISTORY_RESULT);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -161,12 +234,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000,
+                10, mLocationListener);
+
 
         final EditText fromTextField = findViewById(R.id.fromTextField);
         final EditText toTextField = findViewById(R.id.toTextField);
         final TextView fromUnitLabel = (TextView) findViewById(R.id.fromUnitLabel);
         final TextView toUnitLabel = (TextView) findViewById(R.id.toUnitLabel);
         final TextView convLabel = (TextView) findViewById(R.id.convType);
+
+        weatherIcon = findViewById(R.id.weatherIcon);
+        current = findViewById(R.id.current);
+        temperature = findViewById(R.id.temperature);
+
 
         fromTextField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -225,6 +318,12 @@ public class MainActivity extends AppCompatActivity {
         convertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String lat = Double.toString(latitude);
+                String lon = Double.toString(longitude);
+
+
+                WeatherService.startGetWeather(MainActivity.this, lat, lon, "p1");
+
                 //check mode
                 if(distanceMode) {  // distance mode
                     UnitsConverter.LengthUnits fromUnits;

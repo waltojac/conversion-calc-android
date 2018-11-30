@@ -141,5 +141,40 @@
         app:layout_constraintStart_toEndOf="@+id/clearButton"
         app:layout_constraintTop_toBottomOf="@+id/toTextField" />
 
+    <ImageView
+        android:id="@+id/weatherIcon"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/clear_day"
+        tools:layout_editor_absoluteX="30dp"
+        tools:layout_editor_absoluteY="299dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calculateButton"/>
+
+    <TextView
+        android:id="@+id/temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:text="TextView"
+        android:textSize="50sp"
+        app:layout_constraintLeft_toRightOf="@id/weatherIcon"
+        app:layout_constraintTop_toTopOf="@id/weatherIcon"
+        app:layout_constraintBottom_toTopOf="@id/current"/>
+
+    <TextView
+        android:id="@+id/current"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:text="TextView"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/weatherIcon"
+        app:layout_constraintLeft_toRightOf="@id/weatherIcon"
+        app:layout_constraintTop_toBottomOf="@id/temperature"/>
+
 
 </android.support.constraint.ConstraintLayout>
